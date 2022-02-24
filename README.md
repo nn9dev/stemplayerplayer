@@ -1,9 +1,7 @@
 # stemplayerplayer
 Stem Player Player
 
-currently very basic.
-
-1, 2, 3, 4 to toggle channels. Can be remapped.
+fairly complete!
 
 1 - instrumental\
 2 - vocals\
@@ -14,8 +12,9 @@ currently very basic.
 DONE:
 - custom paths
 - custom keybinds (done via .JSON config file, completely replacable)
-
-TODO:
 - full control over channel volume
 - after song ends to be able to play another
-- ui?
+- ui
+
+TODO:
+- take requests!
