@@ -35,7 +35,7 @@ def open_new():
     global stem_list
     folder_path = filedialog.askdirectory(initialdir=os.path.normpath("%UserProfile%\Documents"), title="Select Tracks Folder")
     print(folder_path)
-    if SPP_CONFIG["MP3_WAV"] == "WAV":
+    if glob.glob(folder_path + "/*.wav"):
         print("Using WAV...")
         stem_list = glob.glob(folder_path + "/*.wav")
     else:
