@@ -22,7 +22,13 @@ root.withdraw()
 
 folder_path = filedialog.askdirectory(initialdir=os.path.normpath("%UserProfile%\Documents"), title="Select Tracks Folder")
 print(folder_path)
-stem_list = glob.glob(folder_path + "/*.mp3")
+if SPP_CONFIG["MP3_WAV"] == "WAV":
+    print("Using WAV...")
+    stem_list = glob.glob(folder_path + "/*.wav")
+else:
+    stem_list = glob.glob(folder_path + "/*.mp3")
+    print("Using MP3...")
+
 
 pg.mixer.init()
 pg.init()
