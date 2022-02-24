@@ -11,10 +11,10 @@ fairly complete!
 
 DONE:
 - custom paths
-- custom keybinds (done via .JSON config file, completely replacable)
 - full control over channel volume
 - after song ends to be able to play another
 - ui
 
 TODO:
+- custom keybinds
 - take requests!
