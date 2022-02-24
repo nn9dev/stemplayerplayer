@@ -6,6 +6,8 @@ import time
 import json
 import glob
 import tkinter as tk
+from tkinter import *
+from PIL import ImageTk, Image
 from tkinter import filedialog
 
 with open("spp_config.json", encoding="utf-8") as config_file:
@@ -18,13 +20,20 @@ with open("spp_config.json", encoding="utf-8") as config_file:
 root = tk.Tk()
 root.withdraw()
 
-folder_path = filedialog.askdirectory(initialdir=os.path.normpath("%UserProfile%\Documents"), title="Select Track Folder")
+folder_path = filedialog.askdirectory(initialdir=os.path.normpath("%UserProfile%\Documents"), title="Select Tracks Folder")
 print(folder_path)
-
 stem_list = glob.glob(folder_path + "/*.mp3")
 
 pg.mixer.init()
-#pg.init()
+pg.init()
+"""
+pg.display.set_caption('Stem Player Player')
+window = pg.display.set_mode((300, 300))
+image = pg.image.load('stemplayer.png')
+image = pg.transform.scale(image, (300, 300))
+window.blit(image, (0, 0))
+"""
+
 
 a1Note = pg.mixer.Sound(stem_list[0])
 a2Note = pg.mixer.Sound(stem_list[1])
