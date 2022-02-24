@@ -1,16 +1,24 @@
-import keyboard
 import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" #shhh pygame
+import keyboard
 import pygame as pg
 import time
+import tkinter as tk
+from tkinter import filedialog
+
+root = tk.Tk()
+root.withdraw()
+
+folder_path = filedialog.askdirectory(initialdir=os.path.normpath("%UserProfile%\Documents"), title="Select Track Folder")
+print(folder_path)
 
 pg.mixer.init()
 #pg.init()
 
-a1Note = pg.mixer.Sound("C:\stemplayer\\nmwi\\nmwi1.mp3")
-a2Note = pg.mixer.Sound("C:\stemplayer\\nmwi\\nmwi2.mp3")
-a3Note = pg.mixer.Sound("C:\stemplayer\\nmwi\\nmwi3.mp3")
-a4Note = pg.mixer.Sound("C:\stemplayer\\nmwi\\nmwi4.mp3")
+a1Note = pg.mixer.Sound(folder_path + "\\1.mp3")
+a2Note = pg.mixer.Sound(folder_path + "\\2.mp3")
+a3Note = pg.mixer.Sound(folder_path + "\\3.mp3")
+a4Note = pg.mixer.Sound(folder_path + "\\4.mp3")
 
 #pg.mixer.set_num_channels(50)
 
