@@ -70,13 +70,14 @@ def close_window():
     root.destroy()
     exit()
 
-
+"""
 with open("spp_config.json", encoding="utf-8") as config_file:
     SPP_CONFIG = json.load(config_file)
     KEY_INSTRUMENTALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_INSTRUMENTALS"])[0]
     KEY_VOCALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_VOCALS"])[0]
     KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
     KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
+"""
 
 
 pg.mixer.init()
