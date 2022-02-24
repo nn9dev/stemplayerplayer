@@ -4,6 +4,7 @@ import keyboard
 import pygame as pg
 import time
 import json
+import glob
 import tkinter as tk
 from tkinter import filedialog
 
@@ -12,15 +13,7 @@ with open("spp_config.json", encoding="utf-8") as config_file:
     KEY_INSTRUMENTALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_INSTRUMENTALS"])[0]
     KEY_VOCALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_VOCALS"])[0]
     KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
-    KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0] 
-        
-
-#print(keyboard.key_to_scan_codes('1'))
-#print(keyboard.key_to_scan_codes('2'))
-#print(keyboard.key_to_scan_codes('3'))
-#print(keyboard.key_to_scan_codes('4'))
-#print(keyboard.key_to_scan_codes("Shift"))
-
+    KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
 
 root = tk.Tk()
 root.withdraw()
@@ -28,13 +21,15 @@ root.withdraw()
 folder_path = filedialog.askdirectory(initialdir=os.path.normpath("%UserProfile%\Documents"), title="Select Track Folder")
 print(folder_path)
 
+stem_list = glob.glob(folder_path + "/*.mp3")
+
 pg.mixer.init()
 #pg.init()
 
-a1Note = pg.mixer.Sound(folder_path + "\\1.mp3")
-a2Note = pg.mixer.Sound(folder_path + "\\2.mp3")
-a3Note = pg.mixer.Sound(folder_path + "\\3.mp3")
-a4Note = pg.mixer.Sound(folder_path + "\\4.mp3")
+a1Note = pg.mixer.Sound(stem_list[0])
+a2Note = pg.mixer.Sound(stem_list[1])
+a3Note = pg.mixer.Sound(stem_list[2])
+a4Note = pg.mixer.Sound(stem_list[3])
 
 #pg.mixer.set_num_channels(50)
 
@@ -43,7 +38,7 @@ a2Note.play()
 a3Note.play()
 a4Note.play()
 
-print (pg.mixer.get_busy())
+#print (pg.mixer.get_busy())
 
 while pg.mixer.get_busy() == True:
     #print(a1Note.get_volume())
