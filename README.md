@@ -1,4 +1,4 @@
-# stemplayerplayer
+# Stem Player Player
 Stem Player Player
 
 fairly complete!
