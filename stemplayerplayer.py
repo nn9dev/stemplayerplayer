@@ -3,8 +3,24 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" #shhh pygame
 import keyboard
 import pygame as pg
 import time
+import json
 import tkinter as tk
 from tkinter import filedialog
+
+with open("spp_config.json", encoding="utf-8") as config_file:
+    SPP_CONFIG = json.load(config_file)
+    KEY_INSTRUMENTALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_INSTRUMENTALS"])[0]
+    KEY_VOCALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_VOCALS"])[0]
+    KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
+    KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0] 
+        
+
+#print(keyboard.key_to_scan_codes('1'))
+#print(keyboard.key_to_scan_codes('2'))
+#print(keyboard.key_to_scan_codes('3'))
+#print(keyboard.key_to_scan_codes('4'))
+#print(keyboard.key_to_scan_codes("Shift"))
+
 
 root = tk.Tk()
 root.withdraw()
@@ -35,46 +51,49 @@ while pg.mixer.get_busy() == True:
     #print(a3Note.get_volume())
     #print(a4Note.get_volume())
     
-    if keyboard.is_pressed('1'):
+    if keyboard.is_pressed(KEY_INSTRUMENTALS):
         print ("1")
         if a1Note.get_volume() == 1.0:
             a1Note.set_volume(0.0)
         elif a1Note.get_volume() == 0.0:
             a1Note.set_volume(1.0)
         print(a1Note.get_volume())
-        while keyboard.is_pressed('1'):
-            keyboard.block_key('1')
+        while keyboard.is_pressed(KEY_INSTRUMENTALS):
+            keyboard.block_key(KEY_INSTRUMENTALS)
         keyboard.unhook_all()
             
-    if keyboard.is_pressed('2'):
+    if keyboard.is_pressed(KEY_VOCALS):
         print ("2")
         if a2Note.get_volume() == 1.0:
             a2Note.set_volume(0.0)
         elif a2Note.get_volume() == 0.0:
             a2Note.set_volume(1.0)
         print(a2Note.get_volume())
-        while keyboard.is_pressed('2'):
-            keyboard.block_key('2')
+        while keyboard.is_pressed(KEY_VOCALS):
+            keyboard.block_key(KEY_VOCALS)
         keyboard.unhook_all()
             
-    if keyboard.is_pressed('3'):
+    if keyboard.is_pressed(KEY_BASS):
         print("3")
         if a3Note.get_volume() == 1.0:
             a3Note.set_volume(0.0)
         elif a3Note.get_volume() == 0.0:
             a3Note.set_volume(1.0)
         print(a3Note.get_volume())
-        while keyboard.is_pressed('3'):
-            keyboard.block_key('3')
+        while keyboard.is_pressed(KEY_BASS):
+            keyboard.block_key(KEY_BASS)
         keyboard.unhook_all()
             
-    if keyboard.is_pressed('4'):
+    if keyboard.is_pressed(KEY_DRUMS):
         print("4")
         if a4Note.get_volume() == 1.0:
             a4Note.set_volume(0.0)
         elif a4Note.get_volume() == 0.0:
             a4Note.set_volume(1.0)
         print(a4Note.get_volume())
-        while keyboard.is_pressed('4'):
-            keyboard.block_key('4')
+        while keyboard.is_pressed(KEY_DRUMS):
+            keyboard.block_key(KEY_DRUMS)
         keyboard.unhook_all()
+
+##hello :)
+    
