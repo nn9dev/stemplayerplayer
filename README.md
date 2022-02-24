@@ -1,7 +1,7 @@
 # stemplayerplayer
 Stem Player Player
 
-currently basic, but will soon be a player for playing stem player split files.
+currently very basic.
 
 1, 2, 3, 4 to toggle channels. Can be remapped.
 
