@@ -17,4 +17,5 @@ DONE:
 
 TODO:
 - full control over channel volume
+- after song ends to be able to play another
 - ui?
