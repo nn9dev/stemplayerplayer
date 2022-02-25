@@ -17,4 +17,5 @@ DONE:
 
 TODO:
 - custom keybinds
+- play albums/folders in folders
 - take requests!
