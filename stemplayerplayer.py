@@ -29,7 +29,8 @@ def create_config():
         "KEY_INSTRUMENTALS": "1",
         "KEY_VOCALS": "2",
         "KEY_BASS": "3",
-        "KEY_DRUMS": "4"
+        "KEY_DRUMS": "4",
+        "KEYBINDS_ENABLED": 0
         }
         tempjson = json.dumps(default_config)
         with open(homedir + "/stemplayerplayer_config.json", "w") as jsonfile:
@@ -42,6 +43,7 @@ with open(homedir + "/stemplayerplayer_config.json", encoding="utf-8") as config
     KEY_VOCALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_VOCALS"])[0]
     KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
     KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
+    KEYBINDS_ENABLED = SPP_CONFIG["KEYBINDS_ENABLED"]
 
 def open_config():
     import platform
@@ -183,6 +185,13 @@ def pause_play():
         pg.mixer.unpause()
 
 def close_window():
+    global onoff
+    with open(homedir + "/stemplayerplayer_config.json") as json_file:
+        jsontemp = json.load(json_file)
+    jsontemp['KEYBINDS_ENABLED'] = onoff.get()
+    
+    with open(homedir + "/stemplayerplayer_config.json", 'w') as json_file:
+        json.dump(jsontemp, json_file)
     pg.mixer.quit()
     pg.quit()
     root.destroy()
@@ -235,7 +244,8 @@ newtrack.grid(row=3, column=2, pady=7)
 newtrack = Button(frame2, text="Edit Keybinds", font=("Times New Roman", 12, "bold"), command=lambda: open_config())
 newtrack.grid(row=3, column=3, pady=7)
 
-onoff = tk.IntVar()
+onoff = tk.IntVar()         #Keybinds toggle box
+onoff.set(KEYBINDS_ENABLED)
 tgkb = tk.Checkbutton(root,
                       text='Keybinds Enabled',
                       command=toggle_keybinds,
