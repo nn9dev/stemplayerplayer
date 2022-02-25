@@ -14,8 +14,8 @@ DONE:
 - full control over channel volume
 - after song ends to be able to play another
 - ui
+- custom keybinds
 
 TODO:
-- custom keybinds
 - play albums/folders in folders
 - take requests!
