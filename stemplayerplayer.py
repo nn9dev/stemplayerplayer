@@ -24,23 +24,30 @@ def slider(value):
     b = bass_Scale.get()
     d = drums_Scale.get()
 
-    note_objects[0].set_volume(i)
-    note_objects[1].set_volume(v)
-    note_objects[2].set_volume(b)
-    note_objects[3].set_volume(d)
+    if note_objects:
+        note_objects[0].set_volume(i)
+        note_objects[1].set_volume(v)
+        note_objects[2].set_volume(b)
+        note_objects[3].set_volume(d)
 
 def open_new():
     pg.mixer.stop()
     global note_objects
     global stem_list
+    stem_list=[]
     folder_path = filedialog.askdirectory(initialdir=os.path.normpath("%UserProfile%\Documents"), title="Select Tracks Folder")
     print(folder_path)
-    if glob.glob(folder_path + "/*.wav"):
+    if not folder_path:
+        return
+    elif glob.glob(folder_path + "/*.flac"):
+        print("Using FLAC...")
+        stem_list = glob.glob(folder_path + "/*.flac")
+    elif glob.glob(folder_path + "/*.wav"):
         print("Using WAV...")
         stem_list = glob.glob(folder_path + "/*.wav")
-    else:
-        stem_list = glob.glob(folder_path + "/*.mp3")
+    elif glob.glob(folder_path + "/*.mp3"):
         print("Using MP3...")
+        stem_list = glob.glob(folder_path + "/*.mp3")
     a1Note = pg.mixer.Sound(stem_list[0])
     a2Note = pg.mixer.Sound(stem_list[1])
     a3Note = pg.mixer.Sound(stem_list[2])
@@ -81,8 +88,7 @@ with open("spp_config.json", encoding="utf-8") as config_file:
 
 
 pg.mixer.init()
-pg.init()
-open_new()
+#open_new()
 
 
 frame = Frame(root, bd=1, relief=None)
