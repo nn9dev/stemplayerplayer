@@ -1,5 +1,7 @@
 import os
+from os.path import expanduser
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" #shhh pygame
+import subprocess
 import keyboard
 import pygame as pg
 import time
@@ -10,13 +12,55 @@ from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import filedialog
 
+homedir = os.path.expanduser("~")
+
 state=1
 stem_list = []
 note_objects=[]
+mutevols=[0,0,0,0]
 
 root = tk.Tk()
 root.title('Stem Player Player')
 root.protocol("WM_DELETE_WINDOW", lambda: close_window())
+
+def create_config():
+    if not os.path.exists(homedir + "/stemplayerplayer_config.json"): ##create config if doesn't exist
+        default_config = {
+        "KEY_INSTRUMENTALS": "1",
+        "KEY_VOCALS": "2",
+        "KEY_BASS": "3",
+        "KEY_DRUMS": "4"
+        }
+        tempjson = json.dumps(default_config)
+        with open(homedir + "/stemplayerplayer_config.json", "w") as jsonfile:
+            jsonfile.write(tempjson)
+
+create_config()
+with open(homedir + "/stemplayerplayer_config.json", encoding="utf-8") as config_file:
+    SPP_CONFIG = json.load(config_file)
+    KEY_INSTRUMENTALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_INSTRUMENTALS"])[0]
+    KEY_VOCALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_VOCALS"])[0]
+    KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
+    KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
+
+def open_config():
+    import platform
+    global KEY_INSTRUMENTALS, KEY_VOCALS, KEY_BASS, KEY_DRUMS
+    if platform.system() == 'Windows':
+        subprocess.call("notepad.exe " + homedir + "/stemplayerplayer_config.json", creationflags=0x08000000) #flag for CREATE_NO_WINDOW
+    elif platform.system() == 'Linux':
+        os.system("xdg-open " + homedir + "/stemplayerplayer_config.json")
+    elif platform.system() == 'Darwin':
+        os.system("open " + homedir + "/stemplayerplayer_config.json")
+        
+    with open(homedir + "/stemplayerplayer_config.json", encoding="utf-8") as config_file: #reimport keybinds
+        SPP_CONFIG = json.load(config_file)
+        KEY_INSTRUMENTALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_INSTRUMENTALS"])[0]
+        KEY_VOCALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_VOCALS"])[0]
+        KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
+        KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
+        
+        
 
 def slider(value):
     i = instrumentals_Scale.get()
@@ -24,7 +68,7 @@ def slider(value):
     b = bass_Scale.get()
     d = drums_Scale.get()
 
-    if note_objects:
+    if note_objects:    #suppress stupid error
         note_objects[0].set_volume(i)
         note_objects[1].set_volume(v)
         note_objects[2].set_volume(b)
@@ -35,7 +79,7 @@ def open_new():
     global note_objects
     global stem_list
     stem_list=[]
-    folder_path = filedialog.askdirectory(initialdir=os.path.normpath("%UserProfile%\Documents"), title="Select Tracks Folder")
+    folder_path = filedialog.askdirectory(title="Select Tracks Folder")
     print(folder_path)
     if not folder_path:
         return
@@ -58,7 +102,74 @@ def open_new():
     a4Note.play()
     note_objects = [a1Note, a2Note, a3Note, a4Note]
     
+def toggle_keybinds():
+    print(onoff.get())
 
+def check_keybinds():
+    ##hell keybinds
+    if keyboard.is_pressed(KEY_INSTRUMENTALS) and onoff.get() == 1:
+        toggle_channel(1)
+                
+    if keyboard.is_pressed(KEY_VOCALS)and onoff.get() == 1:
+        toggle_channel(2)
+
+    if keyboard.is_pressed(KEY_BASS) and onoff.get() == 1:
+        toggle_channel(3)
+            
+    if keyboard.is_pressed(KEY_DRUMS) and onoff.get() == 1:
+        toggle_channel(4)
+    root.after(1, check_keybinds)
+
+def toggle_channel(toToggle):
+    #print("hello from togglechannel")
+    if note_objects:  #suppress stupid error pt 2
+        if toToggle == 1:
+            print ("1")
+            if note_objects[0].get_volume() != 0.0:
+                mutevols[0] = note_objects[0].get_volume()
+                note_objects[0].set_volume(0.0)
+            elif note_objects[0].get_volume() == 0.0:
+                note_objects[0].set_volume(mutevols[0])
+            print(note_objects[0].get_volume())
+            while keyboard.is_pressed(KEY_INSTRUMENTALS):
+                keyboard.block_key(KEY_INSTRUMENTALS)
+            keyboard.unhook_all()
+        elif toToggle == 2:
+            print ("2")
+            if note_objects[1].get_volume() != 0.0:
+                mutevols[1] = note_objects[1].get_volume()
+                note_objects[1].set_volume(0.0)
+            elif note_objects[1].get_volume() == 0.0:
+                note_objects[1].set_volume(mutevols[1])
+            print(note_objects[1].get_volume())
+            while keyboard.is_pressed(KEY_VOCALS):
+                keyboard.block_key(KEY_VOCALS)
+            keyboard.unhook_all()
+        elif toToggle == 3:
+            print ("3")
+            if note_objects[2].get_volume() != 0.0:
+                mutevols[2] = note_objects[2].get_volume()
+                note_objects[2].set_volume(0.0)
+            elif note_objects[2].get_volume() == 0.0:
+                note_objects[2].set_volume(mutevols[2])
+            print(note_objects[2].get_volume())
+            while keyboard.is_pressed(KEY_BASS):
+                keyboard.block_key(KEY_BASS)
+            keyboard.unhook_all()
+        elif toToggle == 4:
+            print ("4")
+            if note_objects[3].get_volume() != 0.0:
+                mutevols[3] = note_objects[3].get_volume()
+                note_objects[3].set_volume(0.0)
+            elif note_objects[3].get_volume() == 0.0:
+                note_objects[3].set_volume(mutevols[3])
+            print(note_objects[3].get_volume())
+            while keyboard.is_pressed(KEY_DRUMS):
+                keyboard.block_key(KEY_DRUMS)
+            keyboard.unhook_all()
+    else:
+        return
+        
 
 def pause_play():
     global state
@@ -77,19 +188,8 @@ def close_window():
     root.destroy()
     exit()
 
-"""
-with open("spp_config.json", encoding="utf-8") as config_file:
-    SPP_CONFIG = json.load(config_file)
-    KEY_INSTRUMENTALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_INSTRUMENTALS"])[0]
-    KEY_VOCALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_VOCALS"])[0]
-    KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
-    KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
-"""
-
 
 pg.mixer.init()
-#open_new()
-
 
 frame = Frame(root, bd=1, relief=None)
 frame.pack(pady=5)
@@ -122,6 +222,7 @@ drums_Scale = Scale(frame, resolution=0.01, from_=0.0, to=1.0, length=210, orien
 drums_Scale.grid(row=3, column=1)
 drums_Scale.set(1.0)
 
+###commands
 frame2 = Frame(root, bd=1, relief=None)
 frame2.pack(pady=5)
 
@@ -131,5 +232,18 @@ pauseplay.grid(row=3, column=1, pady=7)
 newtrack = Button(frame2, text="New Track", font=("Times New Roman", 12, "bold"), command=lambda: open_new())
 newtrack.grid(row=3, column=2, pady=7)
 
+newtrack = Button(frame2, text="Edit Keybinds", font=("Times New Roman", 12, "bold"), command=lambda: open_config())
+newtrack.grid(row=3, column=3, pady=7)
 
+onoff = tk.IntVar()
+tgkb = tk.Checkbutton(root,
+                      text='Keybinds Enabled',
+                      command=toggle_keybinds,
+                      font=("Times New Roman", 12, "bold"),
+                      variable=onoff,
+                      onvalue=1,
+                      offvalue=0)
+tgkb.pack()
+
+root.after(1, check_keybinds)
 root.mainloop()
