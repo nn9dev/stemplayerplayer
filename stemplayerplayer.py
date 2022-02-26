@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import filedialog
+from pydub import AudioSegment
 
 homedir = os.path.expanduser("~")
 
@@ -18,6 +19,7 @@ state=1
 stem_list = []
 note_objects=[]
 mutevols=[0,0,0,0]
+merging = False
 
 root = tk.Tk()
 root.title('Stem Player Player')
@@ -94,15 +96,31 @@ def open_new():
     elif glob.glob(folder_path + "/*.mp3"):
         print("Using MP3...")
         stem_list = glob.glob(folder_path + "/*.mp3")
+        
     a1Note = pg.mixer.Sound(stem_list[0])
     a2Note = pg.mixer.Sound(stem_list[1])
     a3Note = pg.mixer.Sound(stem_list[2])
     a4Note = pg.mixer.Sound(stem_list[3])
-    a1Note.play()
-    a2Note.play()
-    a3Note.play()
-    a4Note.play()
+    if merging == True:
+        a1Note.play()
+        a2Note.play()
+        a3Note.play()
+        a4Note.play()
     note_objects = [a1Note, a2Note, a3Note, a4Note]
+
+def merge_stems():
+    merging = True
+    open_new()
+    merging = False
+    text = stem_list[0]
+    soundformat = text.partition("1.")[2]
+    stem1 = AudioSegment.from_file(stem_list[0])
+    stem2 = AudioSegment.from_file(stem_list[1])
+    stem3 = AudioSegment.from_file(stem_list[2])
+    stem4 = AudioSegment.from_file(stem_list[3])
+    overlay = stem1.overlay(stem2.overlay(stem3.overlay(stem4)))
+
+    file_handle = overlay.export(text.partition("1.")[0] + "." + soundformat, format=soundformat)
     
 def toggle_keybinds():
     print(onoff.get())
@@ -236,13 +254,16 @@ frame2 = Frame(root, bd=1, relief=None)
 frame2.pack(pady=5)
 
 pauseplay = Button(frame2, text="Pause/Play", font=("Times New Roman", 12, "bold"), command=lambda: pause_play())
-pauseplay.grid(row=3, column=1, pady=7)
+pauseplay.grid(row=3, column=1, pady=2)
 
 newtrack = Button(frame2, text="New Track", font=("Times New Roman", 12, "bold"), command=lambda: open_new())
-newtrack.grid(row=3, column=2, pady=7)
+newtrack.grid(row=3, column=2, pady=2)
 
-newtrack = Button(frame2, text="Edit Keybinds", font=("Times New Roman", 12, "bold"), command=lambda: open_config())
-newtrack.grid(row=3, column=3, pady=7)
+keybindsbutton = Button(frame2, text="Edit Keybinds", font=("Times New Roman", 12, "bold"), command=lambda: open_config())
+keybindsbutton.grid(row=3, column=3, pady=2)
+
+mergebutton = Button(frame2, text="Merge Stems", font=("Times New Roman", 12, "bold"), command=lambda: merge_stems())
+mergebutton.grid(row=4, column=2, pady=2)
 
 onoff = tk.IntVar()         #Keybinds toggle box
 onoff.set(KEYBINDS_ENABLED)
