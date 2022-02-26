@@ -64,7 +64,6 @@ def open_config():
         KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
         KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
         
-        
 
 def slider(value):
     i = instrumentals_Scale.get()
@@ -109,18 +108,24 @@ def open_new():
     note_objects = [a1Note, a2Note, a3Note, a4Note]
 
 def merge_stems():
-    merging = True
-    open_new()
-    merging = False
-    text = stem_list[0]
-    soundformat = text.partition("1.")[2]
-    stem1 = AudioSegment.from_file(stem_list[0])
-    stem2 = AudioSegment.from_file(stem_list[1])
-    stem3 = AudioSegment.from_file(stem_list[2])
-    stem4 = AudioSegment.from_file(stem_list[3])
-    overlay = stem1.overlay(stem2.overlay(stem3.overlay(stem4)))
-
-    file_handle = overlay.export(text.partition("1.")[0] + "." + soundformat, format=soundformat)
+    global stem_list
+    from shutil import which
+    print(which('ffmpeg'))
+    if which('ffmpeg') is not None:
+        merging = True
+        open_new()
+        merging = False
+        if stem_list:
+            text = stem_list[0]
+            soundformat = text.partition("1.")[2]
+            stem1 = AudioSegment.from_file(stem_list[0])
+            stem2 = AudioSegment.from_file(stem_list[1])
+            stem3 = AudioSegment.from_file(stem_list[2])
+            stem4 = AudioSegment.from_file(stem_list[3])
+            overlay = stem1.overlay(stem2.overlay(stem3.overlay(stem4)))
+            file_handle = overlay.export(text.partition("1.")[0] + "." + soundformat, format=soundformat)
+    else:
+         tk.messagebox.showerror(title="ffmpeg not found", message="ffmpeg not found on your system. Please install ffmpeg and make sure it is added to your PATH.")
     
 def toggle_keybinds():
     print(onoff.get())
