@@ -8,7 +8,7 @@ NOTE: DOES NOT ENABLE DOWNLOADS FROM THE STEM PLAYER SITE. MAY BE ADDED LATER. F
 
 fairly complete!
 
-Default Keybinds
+Default Keybinds\
 1 - instrumental\
 2 - vocals\
 3 - bass\
@@ -22,6 +22,7 @@ Default Keybinds
 - custom keybinds
 
 TODO:
-- play albums/folders in folders
+- finish Stem Brige (import songs from site)
+- play albums/folders in folders -> up next
 - maybe ability to create stems? website does that though
 - take requests!
