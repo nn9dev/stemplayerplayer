@@ -12,6 +12,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import filedialog
 from pydub import AudioSegment
+from stembridge import *
 
 homedir = os.path.expanduser("~")
 
@@ -268,7 +269,10 @@ keybindsbutton = Button(frame2, text="Edit Keybinds", font=("Times New Roman", 1
 keybindsbutton.grid(row=3, column=3, pady=2)
 
 mergebutton = Button(frame2, text="Merge Stems", font=("Times New Roman", 12, "bold"), command=lambda: merge_stems())
-mergebutton.grid(row=4, column=2, pady=2)
+mergebutton.grid(row=4, column=1, pady=2)
+
+startbridge = Button(frame2, text="Bridge on/off", font=("Times New Roman", 12, "bold"), command=lambda: start_bridge())
+startbridge.grid(row=4, column=2, pady=2)
 
 onoff = tk.IntVar()         #Keybinds toggle box
 onoff.set(KEYBINDS_ENABLED)
