@@ -56,6 +56,8 @@ with open(homedir + "/stemplayerplayer_config.json", encoding="utf-8") as config
     KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
     KEYBINDS_ENABLED = SPP_CONFIG["KEYBINDS_ENABLED"]
     SPP_HOME = SPP_CONFIG["SPP_HOME"]
+    if not os.path.exists(SPP_HOME):
+        os.makedirs(SPP_HOME)
 
 from stembridge import *
 
