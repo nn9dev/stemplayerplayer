@@ -16,7 +16,7 @@ Default Keybinds
 (i believe that's the numbers they download from the site)
 
 # Features
-- ability to merge stems (requires [ffmpeg](https://ffmpeg.org)
+- ability to merge stems (requires [ffmpeg](https://ffmpeg.org))
 - full control over channel volume
 - ui
 - custom keybinds
