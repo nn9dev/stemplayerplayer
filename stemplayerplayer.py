@@ -12,7 +12,6 @@ from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import filedialog
 from pydub import AudioSegment
-from stembridge import *
 
 homedir = os.path.expanduser("~")
 
@@ -23,23 +22,32 @@ mutevols=[0,0,0,0]
 merging = False
 
 root = tk.Tk()
+startstop_bridge = tk.IntVar()
+startstop_bridge.set(0)
 root.title('Stem Player Player')
 root.protocol("WM_DELETE_WINDOW", lambda: close_window())
 
 def create_config():
+    import platform
     if not os.path.exists(homedir + "/stemplayerplayer_config.json"): ##create config if doesn't exist
         default_config = {
         "KEY_INSTRUMENTALS": "1",
         "KEY_VOCALS": "2",
         "KEY_BASS": "3",
         "KEY_DRUMS": "4",
-        "KEYBINDS_ENABLED": 0
+        "KEYBINDS_ENABLED": 0,
         }
-        tempjson = json.dumps(default_config)
+        if 'SPP_HOME' not in default_config:
+            if platform.system() == 'Windows':
+                default_config['SPP_HOME'] = homedir + "\\stemplayer"
+            else:
+                default_config['SPP_HOME'] = homedir + "/stemplayer"
+        tempjson = json.dumps(default_config, indent=2)
         with open(homedir + "/stemplayerplayer_config.json", "w") as jsonfile:
             jsonfile.write(tempjson)
 
 create_config()
+#load config
 with open(homedir + "/stemplayerplayer_config.json", encoding="utf-8") as config_file:
     SPP_CONFIG = json.load(config_file)
     KEY_INSTRUMENTALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_INSTRUMENTALS"])[0]
@@ -47,23 +55,29 @@ with open(homedir + "/stemplayerplayer_config.json", encoding="utf-8") as config
     KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
     KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
     KEYBINDS_ENABLED = SPP_CONFIG["KEYBINDS_ENABLED"]
+    SPP_HOME = SPP_CONFIG["SPP_HOME"]
+
+from stembridge import *
 
 def open_config():
     import platform
     global KEY_INSTRUMENTALS, KEY_VOCALS, KEY_BASS, KEY_DRUMS
     if platform.system() == 'Windows':
-        subprocess.call("notepad.exe " + homedir + "/stemplayerplayer_config.json", creationflags=0x08000000) #flag for CREATE_NO_WINDOW
+        subprocess.Popen("notepad.exe " + homedir + "/stemplayerplayer_config.json", creationflags=0x08000000) #flag for CREATE_NO_WINDOW
     elif platform.system() == 'Linux':
-        os.system("xdg-open " + homedir + "/stemplayerplayer_config.json")
+        subprocess.Popen("xdg-open " + homedir + "/stemplayerplayer_config.json")
     elif platform.system() == 'Darwin':
-        os.system("open " + homedir + "/stemplayerplayer_config.json")
-        
+        subprocess.Popen("open " + homedir + "/stemplayerplayer_config.json")
+
+    '''
     with open(homedir + "/stemplayerplayer_config.json", encoding="utf-8") as config_file: #reimport keybinds
         SPP_CONFIG = json.load(config_file)
         KEY_INSTRUMENTALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_INSTRUMENTALS"])[0]
         KEY_VOCALS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_VOCALS"])[0]
         KEY_BASS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_BASS"])[0]
         KEY_DRUMS = keyboard.key_to_scan_codes(SPP_CONFIG["KEY_DRUMS"])[0]
+        SPP_HOME = SPP_CONFIG["SPP_HOME"]
+    '''
         
 
 def slider(value):
@@ -260,19 +274,30 @@ frame2 = Frame(root, bd=1, relief=None)
 frame2.pack(pady=5)
 
 pauseplay = Button(frame2, text="Pause/Play", font=("Times New Roman", 12, "bold"), command=lambda: pause_play())
-pauseplay.grid(row=3, column=1, pady=2)
+pauseplay.grid(row=3, column=1, sticky=E)
 
 newtrack = Button(frame2, text="New Track", font=("Times New Roman", 12, "bold"), command=lambda: open_new())
-newtrack.grid(row=3, column=2, pady=2)
+newtrack.grid(row=3, column=2)
 
-keybindsbutton = Button(frame2, text="Edit Keybinds", font=("Times New Roman", 12, "bold"), command=lambda: open_config())
-keybindsbutton.grid(row=3, column=3, pady=2)
+keybindsbutton = Button(frame2, text="Edit config", font=("Times New Roman", 12, "bold"), command=lambda: open_config())
+keybindsbutton.grid(row=3, column=3, sticky=W)
 
 mergebutton = Button(frame2, text="Merge Stems", font=("Times New Roman", 12, "bold"), command=lambda: merge_stems())
-mergebutton.grid(row=4, column=1, pady=2)
+mergebutton.grid(row=4, column=2, pady=2)
 
-startbridge = Button(frame2, text="Bridge on/off", font=("Times New Roman", 12, "bold"), command=lambda: start_bridge())
-startbridge.grid(row=4, column=2, pady=2)
+#startbridge = Button(frame2, text="Bridge on/off", font=("Times New Roman", 12, "bold"), command=lambda: start_bridge())
+#startbridge.grid(row=4, column=2, pady=2)
+
+
+startbridge = tk.Checkbutton(root,
+                             text='Bridge Enabled',
+                             command=lambda: start_bridge(startstop_bridge.get()),
+                             font=("Times New Roman", 12, "bold"),
+                             variable=startstop_bridge,
+                             onvalue=1,
+                             offvalue=0)
+startbridge.pack()
+
 
 onoff = tk.IntVar()         #Keybinds toggle box
 onoff.set(KEYBINDS_ENABLED)

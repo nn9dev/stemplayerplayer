@@ -1,16 +1,22 @@
 import flask
 import os
-import threading    #god save the queen or something why do people hate threads
+import threading    #god save the queen or something why do people hate threadss
+import json
 import types
 from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 os.environ["FLASK_ENV"] = "production"
 
-UPLOAD_FOLDER = "C:\stemplayer\\"
+TESTING = True
+
+homedir = os.path.expanduser("~")
+with open(homedir + "/stemplayerplayer_config.json") as json_file:
+        tempjson = json.load(json_file)
+        UPLOAD_FOLDER = tempjson['SPP_HOME']
 ALLOWED_EXTENSIONS = {'mp3','wav','flac'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-startstop = 1
+#startstop_bridge = 1
 globalthread = types.SimpleNamespace()
 
 # this was absolutely copied
@@ -27,18 +33,19 @@ class ThreadingExample(object):
             # Do something
             app.run(port=1337)
 
-def start_bridge():
+def start_bridge(startstop_bridge):
+    print(startstop_bridge)
     global globalthread
-    global startstop
-    if startstop==1:
-        startstop=0
+    if startstop_bridge==1:
+        #startstop_bridge=0
         app.config
         example = ThreadingExample()
         print("bridge started!\n")
-    elif startstop==0:
-        startstop=1
+    elif startstop_bridge==0:
+        #startstop_bridge=1
         globalthread._running = False
         print("bridge stopped!")
+    #return startstop_bridge
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -62,12 +69,14 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             #return redirect(url_for('download_file', name=filename))
             return "success"
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    '''
+    if TESTING is True:
+        return '''
+        <!doctype html>
+        <title>Upload new File</title>
+        <h1>Upload new File</h1>
+        <form method=post enctype=multipart/form-data>
+          <input type=file name=file>
+          <input type=submit value=Upload>
+        </form>
+        '''
+    else: return "enabled"
