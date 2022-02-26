@@ -22,7 +22,7 @@ Default Keybinds\
 - custom keybinds
 
 TODO:
-- finish Stem Brige (import songs from site)
+- finish Stem Bridge (import songs from site)
 - play albums/folders in folders -> up next
 - maybe ability to create stems? website does that though
 - take requests!
