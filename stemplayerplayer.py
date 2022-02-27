@@ -4,10 +4,10 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" #shhh pygame
 import subprocess
 import keyboard
 import pygame as pg
-import time
 import json
 import glob
 import tkinter as tk
+import tkinter.messagebox
 from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import filedialog
@@ -105,13 +105,13 @@ def open_new():
         return
     elif glob.glob(folder_path + "/*.flac"):
         print("Using FLAC...")
-        stem_list = glob.glob(folder_path + "/*.flac")
+        stem_list = glob.glob(folder_path + '/*[0-9].flac')
     elif glob.glob(folder_path + "/*.wav"):
         print("Using WAV...")
-        stem_list = glob.glob(folder_path + "/*.wav")
+        stem_list = glob.glob(folder_path + '/*[0-9].wav')
     elif glob.glob(folder_path + "/*.mp3"):
         print("Using MP3...")
-        stem_list = glob.glob(folder_path + "/*.mp3")
+        stem_list = glob.glob(folder_path + '/*[0-9].mp3')
         
     a1Note = pg.mixer.Sound(stem_list[0])
     a2Note = pg.mixer.Sound(stem_list[1])
@@ -126,6 +126,8 @@ def open_new():
 
 def merge_stems():
     global stem_list
+    stem_list = []
+    global merging
     from shutil import which
     print(which('ffmpeg'))
     if which('ffmpeg') is not None:
@@ -135,12 +137,19 @@ def merge_stems():
         if stem_list:
             text = stem_list[0]
             soundformat = text.partition("1.")[2]
-            stem1 = AudioSegment.from_file(stem_list[0])
-            stem2 = AudioSegment.from_file(stem_list[1])
-            stem3 = AudioSegment.from_file(stem_list[2])
-            stem4 = AudioSegment.from_file(stem_list[3])
+            print(stem_list[0])
+            #print (text.partition("1.")[0] + "." + soundformat)
+            print(stem_list[0])
+            if os.path.exists(os.path.normpath(text.partition("1.")[0] + "." + soundformat)):
+                os.remove(os.path.normpath(text.partition("1.")[0] + "." + soundformat))
+            stem1 = AudioSegment.from_file(os.path.normpath(stem_list[0]))
+            stem2 = AudioSegment.from_file(os.path.normpath(stem_list[1]))
+            stem3 = AudioSegment.from_file(os.path.normpath(stem_list[2]))
+            stem4 = AudioSegment.from_file(os.path.normpath(stem_list[3]))
             overlay = stem1.overlay(stem2.overlay(stem3.overlay(stem4)))
             file_handle = overlay.export(text.partition("1.")[0] + "." + soundformat, format=soundformat)
+            file_handle.flush()
+            file_handle.close()
     else:
          tk.messagebox.showerror(title="ffmpeg not found", message="ffmpeg not found on your system. Please install ffmpeg and make sure it is added to your PATH.")
     
@@ -290,7 +299,7 @@ mergebutton.grid(row=4, column=2, pady=2)
 #startbridge = Button(frame2, text="Bridge on/off", font=("Times New Roman", 12, "bold"), command=lambda: start_bridge())
 #startbridge.grid(row=4, column=2, pady=2)
 
-
+'''
 startbridge = tk.Checkbutton(root,
                              text='Bridge Enabled',
                              command=lambda: start_bridge(startstop_bridge.get()),
@@ -299,6 +308,7 @@ startbridge = tk.Checkbutton(root,
                              onvalue=1,
                              offvalue=0)
 startbridge.pack()
+'''
 
 
 onoff = tk.IntVar()         #Keybinds toggle box
