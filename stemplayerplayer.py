@@ -1,4 +1,5 @@
 import os
+import re
 from os.path import expanduser
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" #shhh pygame
 import subprocess
@@ -39,12 +40,13 @@ def create_config():
         }
         if 'SPP_HOME' not in default_config:
             if platform.system() == 'Windows':
-                default_config['SPP_HOME'] = homedir + "\\stemplayer"
+                default_config["SPP_HOME"] = homedir + "\\stemplayer"
             else:
-                default_config['SPP_HOME'] = homedir + "/stemplayer"
+                default_config["SPP_HOME"] = homedir + "/stemplayer"
         tempjson = json.dumps(default_config, indent=2)
         with open(homedir + "/stemplayerplayer_config.json", "w") as jsonfile:
             jsonfile.write(tempjson)
+        tempjson.close()
 
 create_config()
 #load config
@@ -136,20 +138,24 @@ def merge_stems():
         merging = False
         if stem_list:
             text = stem_list[0]
-            soundformat = text.partition("1.")[2]
+            soundformat = re.split('[1-4]\.', text)[1]
+            startname = re.split('[1-4]\.', text)[0]
+            print(soundformat)
+            print(startname)
             print(stem_list[0])
-            #print (text.partition("1.")[0] + "." + soundformat)
-            print(stem_list[0])
-            if os.path.exists(os.path.normpath(text.partition("1.")[0] + "." + soundformat)):
-                os.remove(os.path.normpath(text.partition("1.")[0] + "." + soundformat))
+            print(re.split('[1-4]\.', text)[0] + "." + soundformat)
+            if os.path.exists(os.path.normpath(startname + "." + soundformat)):
+                os.remove(os.path.normpath(startname + "." + soundformat))
+            
             stem1 = AudioSegment.from_file(os.path.normpath(stem_list[0]))
             stem2 = AudioSegment.from_file(os.path.normpath(stem_list[1]))
             stem3 = AudioSegment.from_file(os.path.normpath(stem_list[2]))
             stem4 = AudioSegment.from_file(os.path.normpath(stem_list[3]))
             overlay = stem1.overlay(stem2.overlay(stem3.overlay(stem4)))
-            file_handle = overlay.export(text.partition("1.")[0] + "." + soundformat, format=soundformat)
+            file_handle = overlay.export(startname + "." + soundformat, format=soundformat)
             file_handle.flush()
             file_handle.close()
+            
     else:
          tk.messagebox.showerror(title="ffmpeg not found", message="ffmpeg not found on your system. Please install ffmpeg and make sure it is added to your PATH.")
     
@@ -299,7 +305,7 @@ mergebutton.grid(row=4, column=2, pady=2)
 #startbridge = Button(frame2, text="Bridge on/off", font=("Times New Roman", 12, "bold"), command=lambda: start_bridge())
 #startbridge.grid(row=4, column=2, pady=2)
 
-'''
+
 startbridge = tk.Checkbutton(root,
                              text='Bridge Enabled',
                              command=lambda: start_bridge(startstop_bridge.get()),
@@ -308,7 +314,7 @@ startbridge = tk.Checkbutton(root,
                              onvalue=1,
                              offvalue=0)
 startbridge.pack()
-'''
+
 
 
 onoff = tk.IntVar()         #Keybinds toggle box
