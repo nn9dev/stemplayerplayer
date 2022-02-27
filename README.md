@@ -21,7 +21,10 @@ Default Keybinds\
 - ui
 - custom keybinds
 
-TODO:
+# Known issues
+- Keybinds don't work on Mac. See [issue #2](https://github.com/nn9dev/stemplayerplayer/issues/2)
+- 
+# TODO :
 - finish Stem Bridge (import songs from site)
 - play albums/folders in folders -> up next
 - maybe ability to create stems? website does that though
