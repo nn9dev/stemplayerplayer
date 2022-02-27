@@ -1,0 +1,6 @@
+keyboard
+pygame
+json
+Pillow
+pydub
+flask
