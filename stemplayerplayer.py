@@ -117,7 +117,7 @@ def open_new():
     a2Note = pg.mixer.Sound(stem_list[1])
     a3Note = pg.mixer.Sound(stem_list[2])
     a4Note = pg.mixer.Sound(stem_list[3])
-    if merging == True:
+    if merging == False:
         a1Note.play()
         a2Note.play()
         a3Note.play()
