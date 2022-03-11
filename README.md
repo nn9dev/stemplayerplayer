@@ -5,7 +5,7 @@ Stem Player Player
 Download the latest release [here](https://github.com/nn9dev/stemplayerplayer/releases/latest)\
 Optional: install [ffmpeg](https://ffmpeg.org), instructions [here](https://www.google.com/search?q=how+to+install+ffmpeg+and+add+it+to+path)
 
-NOTE: DOES NOT ENABLE DOWNLOADS FROM THE STEM PLAYER SITE. FOR THAT, PLEASE USE [THIS PROJECT](https://github.com/nn9dev/stem-player-emulator)
+NOTE: DOES NOT ENABLE DOWNLOADS FROM THE STEM PLAYER SITE. FOR THAT, PLEASE USE [THIS PROJECT](https://github.com/krystalgamer/stem-player-emulator)
 
 fairly complete!
 
